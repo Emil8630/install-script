@@ -29,16 +29,16 @@ sudo chown -R $(whoami) bw-dwm && cd ~/bw-dwm && cd ~/bw-dwm/archcraft-dwm/sourc
 # Checks for conflicts
 
 if sudo pacman -Q gnu-netcat >/dev/null 2>&1; then
-    sudo pacman -R gnu-netcat  # gnu-netcat is installed
+    sudo pacman -R --noconfirm gnu-netcat  # gnu-netcat is installed
 else
     :  # gnu-netcat is not installed
 fi
 if sudo pacman -Q iptables-nft >/dev/null 2>&1; then
-    sudo pacman -R iptables-nft  # gnu-netcat is installed
+    sudo pacman -R --noconfirm iptables-nft  # gnu-netcat is installed
 else
     :  # gnu-netcat is not installed
 fi
-
+sudo pacman -R --noconfirm iptables-nft
 sudo pacman -Syy --noconfirm  archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
 sudo systemctl enable libvirtd.service
