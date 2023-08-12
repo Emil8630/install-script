@@ -16,10 +16,10 @@ sudo pacman -Syu --noconfirm
 sudo hostnamectl set-hostname "arch"
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim
 
 # Enabling dnscrypt
-#sudo systemctl enable --now dnscrypt-proxy.socket
+sudo systemctl enable --now dnscrypt-proxy.socket
 
 # Getting NixOS package manager & packages
 sudo sh <(curl -L https://nixos.org/nix/install) --daemon
@@ -28,7 +28,7 @@ sudo nix-env -iA nixpkgs.bat
 
 # Installing DWM
 git clone https://github.com/Emil8630/bw-dwm.git ~/bw-dwm
-sudo chown -R $(whoami) bw-dwm && cd ~/bw-dwm && cd ~/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
+sudo chown -R $(whoami) ~/bw-dwm && cd ~/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
 
 # virtual machines with "qemu" and "virtual machine manger"
 # Checks for conflicts
@@ -43,10 +43,10 @@ if sudo pacman -Q iptables-nft >/dev/null 2>&1; then
 else
     :  # iptables-nft is not installed
 fi
-sudo pacman -R --noconfirm iptables-nft
-sudo rm -rf /usr/bin/iptables-nft /usr/bin/iptables-nft-restore /usr/bin/iptables-nft-restore@ /usr/bin/iptables-nft-save /usr/bin/iptables-nft-save@ /usr/bin/iptables /usr/bin/iptables-legacy /usr/bin/iptables-legacy-save /usr/bin/iptables-legacy-restore /usr/bin/iptables-restore /usr/bin/iptables-save /usr/bin/iptables-xml /usr/bin/iptables-translate /usr/bin/iptables-restore-translate
+sudo rm -rf /usr/bin/iptables-nft /usr/bin/iptables-nft-restore /usr/bin/iptables-nft-restore@ /usr/bin/iptables-nft-save /usr/bin/iptables-nft-save@ /usr/bin/iptables /usr/bin/iptables-legacy /usr/bin/iptables-legacy-save /usr/bin/iptables-legacy-restore /usr/bin/iptables-restore /usr/bin/iptables-save /usr/bin/iptables-xml /usr/bin/iptables-translate /usr/bin/iptables-restore-translate /usr/share/iptables /etc/iptables
 sudo rm -f /usr/bin/iptables-apply
-sudo pacman -Syy --noconfirm  archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
+sleep 3
+sudo pacman -Syy archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
 sudo systemctl enable libvirtd.service
 sudo systemctl start libvirtd.service
@@ -56,7 +56,7 @@ sudo systemctl start libvirtd.service
 # line 108 : unix_sock_rw_perms = "0770"
 sudo groupadd libvirt
 newgrp libvirt
-sudo usermod -a -G libvirt $(whoami)
+sudo usermod -aG libvirt $(whoami)
 
 # nested virtualization
 
