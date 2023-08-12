@@ -41,10 +41,10 @@ fi
 if sudo pacman -Q iptables-nft >/dev/null 2>&1; then
     sudo pacman -Rdd --noconfirm iptables-nft  # gnu-netcat is installed
 else
-    :  # gnu-netcat is not installed
+    :  # iptables-nft is not installed
 fi
 sudo pacman -R --noconfirm iptables-nft
-sudo rm -rf /usr/bin/iptables-nft
+sudo rm -rf /usr/bin/iptables-nft /usr/bin/iptables-nft-restore /usr/bin/iptables-nft-restore@ /usr/bin/iptables-nft-save /usr/bin/iptables-nft-save@
 sudo pacman -Syy --noconfirm  archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
 sudo systemctl enable libvirtd.service
@@ -53,6 +53,7 @@ sudo systemctl start libvirtd.service
 # check proper install in : /etc/libvirt/libvirtd.conf
 # line 85 : unix_sock_group = "libvirt"
 # line 108 : unix_sock_rw_perms = "0770"
+sudo groupadd libvirt
 newgrp libvirt
 sudo usermod -a -G libvirt $(whoami)
 
