@@ -44,7 +44,8 @@ else
     :  # iptables-nft is not installed
 fi
 sudo pacman -R --noconfirm iptables-nft
-sudo rm -rf /usr/bin/iptables-nft /usr/bin/iptables-nft-restore /usr/bin/iptables-nft-restore@ /usr/bin/iptables-nft-save /usr/bin/iptables-nft-save@ /usr/bin/iptables /usr/bin/iptables-legacy /usr/bin/iptables-legacy-save /usr/bin/iptables-legacy-restore /usr/bin/iptables-restore /usr/bin/iptables-save /usr/bin/iptables-xml /usr/bin/iptables-translate
+sudo rm -rf /usr/bin/iptables-nft /usr/bin/iptables-nft-restore /usr/bin/iptables-nft-restore@ /usr/bin/iptables-nft-save /usr/bin/iptables-nft-save@ /usr/bin/iptables /usr/bin/iptables-legacy /usr/bin/iptables-legacy-save /usr/bin/iptables-legacy-restore /usr/bin/iptables-restore /usr/bin/iptables-save /usr/bin/iptables-xml /usr/bin/iptables-translate /usr/bin/iptables-restore-translate
+sudo rm -f /usr/bin/iptables-apply
 sudo pacman -Syy --noconfirm  archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
 sudo systemctl enable libvirtd.service
