@@ -33,7 +33,6 @@ sudo systemctl start libvirtd.service
 # check proper install in : /etc/libvirt/libvirtd.conf
 # line 85 : unix_sock_group = "libvirt"
 # line 108 : unix_sock_rw_perms = "0770"
-
 sudo usermod -a -G libvirt $(whoami)
 newgrp libvirt
 
@@ -62,7 +61,11 @@ git clone https://github.com/Emil8630/nvim.git
 mv nvim /home/$(whoami)/.config/nvim
 
 # Installing Picom
-git clone git clone https://github.com/jonaburg/picom && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && rm -r picom
+git clone https://github.com/jonaburg/picom.git && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && rm -r picom
+
+## Installing GRUB Theme
+#Fallout Theme
+wget -O - https://github.com/shvchk/fallout-grub-theme/raw/master/install.sh | bash
 
 # flatpaks
 flatpak install flathub md.obsidian.Obsidian
