@@ -11,7 +11,7 @@ sudo pacman -Syu --noconfirm
 sudo hostnamectl set-hostname "arch"
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 libx11-xcb libXext xproto pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xrandr xfce4-settings zsh hsetroot flatpak wget meson curl
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl
 
 # Enabling dnscrypt
 #sudo systemctl enable --now dnscrypt-proxy.socket
@@ -22,7 +22,7 @@ sudo nix-env -iA nixpkgs.exa
 sudo nix-env -iA nixpkgs.bat
 
 # Installing DWM
-git clone https://github.com/Emil8630/bw-dwm.git ~
+git clone https://github.com/Emil8630/bw-dwm.git ~/bw-dwm
 sudo chown -R $(whoami) bw-dwm && cd ~/bw-dwm && cd ~/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
 
 # virtual machines with "qemu" and "virtual machine manger"
@@ -34,7 +34,7 @@ else
     :  # gnu-netcat is not installed
 fi
 if sudo pacman -Q iptables-nft >/dev/null 2>&1; then
-    sudo pacman -R --noconfirm iptables-nft  # gnu-netcat is installed
+    sudo pacman -Rdd --noconfirm iptables-nft  # gnu-netcat is installed
 else
     :  # gnu-netcat is not installed
 fi
