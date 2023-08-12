@@ -9,7 +9,7 @@ sudo rm -rf strap.sh
 sudo pacman -Syu --noconfirm 
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 libx11-xcb libXext xproto pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xrandr xfce4-settings zsh hsetroot
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 libx11-xcb libXext xproto pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xrandr xfce4-settings zsh hsetroot flatpak wget meson
 
 # Enabling dnscrypt
 #sudo systemctl enable --now dnscrypt-proxy.socket
@@ -54,14 +54,14 @@ systool -m kvm_intel -v | grep nested
 git clone https://github.com/Emil8630/rc-files.git
 cd rc-files
 cat .bashrc_input >> /home/$(whoami)/.bashrc && cat .zshrc_input >> /home/$(whoami)/.zshrc
-cd .. && rm -r rc-files
+cd .. && sudo rm -r rc-files
 
 # Install Neovim Configurations
 git clone https://github.com/Emil8630/nvim.git
 mv nvim /home/$(whoami)/.config/nvim
 
 # Installing Picom
-git clone https://github.com/jonaburg/picom.git && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && rm -r picom
+git clone https://github.com/jonaburg/picom.git && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && sudo rm -r picom
 
 ## Installing GRUB Theme
 #Fallout Theme
