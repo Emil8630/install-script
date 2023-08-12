@@ -1,6 +1,5 @@
 #!/bin/bash
 
-su less
 
 # black arch mirrors
 curl -O https://blackarch.org/strap.sh
@@ -10,10 +9,10 @@ sudo rm -rf strap.sh
 sudo pacman -Syu --noconfirm 
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 libx11-xcb libXext xproto pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xrandr xfce4-settings
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 libx11-xcb libXext xproto pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xrandr xfce4-settings zsh hsetroot
 
 # Enabling dnscrypt
-sudo systemctl enable --now dnscrypt-proxy.socket
+#sudo systemctl enable --now dnscrypt-proxy.socket
 
 # Getting NixOS package manager & packages
 sudo sh <(curl -L https://nixos.org/nix/install) --daemon
@@ -22,7 +21,7 @@ sudo nix-env -iA nixpkgs.bat
 
 # Installing DWM
 git clone https://github.com/Emil8630/bw-dwm.git
-cd bw-dwm && sh build.sh
+sudo chown -R $(whoami) bw-dwm && cd bw-dwm && sh build.sh
 
 # virtual machines with "qemu" and "virtual machine manger"
 sudo pacman -Syy --noconfirm 
@@ -57,7 +56,6 @@ git clone https://github.com/Emil8630/rc-files.git
 cd rc-files
 cat .bashrc_input >> /home/$(whoami)/.bashrc && cat .zshrc_input >> /home/$(whoami)/.zshrc
 cd .. && rm -r rc-files
-source /home/$(whoami)/.zshrc && source /home/$(whoami)/.bashrc
 
 # Install Neovim Configurations
 git clone https://github.com/Emil8630/nvim.git
