@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Backup the original pacman.conf file
+sudo cp /etc/pacman.conf /etc/pacman.conf.backup
+
+# Enable the multilib repository by uncommenting the lines
+sudo sed -i '/\[multilib\]/,+1 s/^#//' /etc/pacman.conf
 
 # black arch mirrors
 curl -O https://blackarch.org/strap.sh
@@ -11,7 +16,7 @@ sudo pacman -Syu --noconfirm
 sudo hostnamectl set-hostname "arch"
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake
 
 # Enabling dnscrypt
 #sudo systemctl enable --now dnscrypt-proxy.socket
@@ -39,6 +44,7 @@ else
     :  # gnu-netcat is not installed
 fi
 sudo pacman -R --noconfirm iptables-nft
+sudo rm -rf /usr/bin/iptables-nft
 sudo pacman -Syy --noconfirm  archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
 sudo systemctl enable libvirtd.service
@@ -47,8 +53,8 @@ sudo systemctl start libvirtd.service
 # check proper install in : /etc/libvirt/libvirtd.conf
 # line 85 : unix_sock_group = "libvirt"
 # line 108 : unix_sock_rw_perms = "0770"
-sudo usermod -a -G libvirt $(whoami)
 newgrp libvirt
+sudo usermod -a -G libvirt $(whoami)
 
 # nested virtualization
 
