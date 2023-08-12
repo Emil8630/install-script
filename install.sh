@@ -22,12 +22,24 @@ sudo nix-env -iA nixpkgs.exa
 sudo nix-env -iA nixpkgs.bat
 
 # Installing DWM
-git clone https://github.com/Emil8630/bw-dwm.git
-sudo chown -R $(whoami) bw-dwm && cd bw-dwm && sh build.sh
+git clone https://github.com/Emil8630/bw-dwm.git ~
+sudo chown -R $(whoami) bw-dwm && cd ~/bw-dwm && cd ~/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
 
 # virtual machines with "qemu" and "virtual machine manger"
-sudo pacman -Syy --noconfirm 
-sudo pacman -S --noconfirm  archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
+# Checks for conflicts
+
+if sudo pacman -Q gnu-netcat >/dev/null 2>&1; then
+    sudo pacman -R gnu-netcat  # gnu-netcat is installed
+else
+    :  # gnu-netcat is not installed
+fi
+if sudo pacman -Q iptables-nft >/dev/null 2>&1; then
+    sudo pacman -R iptables-nft  # gnu-netcat is installed
+else
+    :  # gnu-netcat is not installed
+fi
+
+sudo pacman -Syy --noconfirm  archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
 sudo systemctl enable libvirtd.service
 sudo systemctl start libvirtd.service
