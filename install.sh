@@ -16,15 +16,13 @@ sudo pacman -Syu --noconfirm
 sudo hostnamectl set-hostname "arch"
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety spotify terminus-font adobe-source-code-pro-fonts python-fonttools lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd
 
 # Enabling dnscrypt
 sudo systemctl enable --now dnscrypt-proxy.socket
 
 # Getting NixOS package manager & packages
 sudo sh <(curl -L https://nixos.org/nix/install) --daemon
-sudo nix-env -iA nixpkgs.exa
-sudo nix-env -iA nixpkgs.bat
 
 # Installing DWM
 git clone https://github.com/Emil8630/bw-dwm.git ~/bw-dwm
@@ -76,11 +74,15 @@ systool -m kvm_intel -v | grep nested
 git clone https://github.com/Emil8630/rc-files.git
 cd rc-files
 cat .bashrc_input >> /home/$(whoami)/.bashrc && cat .zshrc_input >> /home/$(whoami)/.zshrc
+sudo cp .config/alacritty/alcritty.yml ~/.config/alacritty/alacritty.yml
 cd .. && sudo rm -r rc-files
 
 # Install Neovim Configurations
 git clone https://github.com/Emil8630/nvim.git
 mv nvim /home/$(whoami)/.config/nvim
+
+# Downloading Wallpapers
+git clone https://github.com/Emil8630/wallpapers ~/wallpapers
 
 # Installing Picom
 git clone https://github.com/jonaburg/picom.git && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && sudo rm -r picom
@@ -93,7 +95,26 @@ wget -O - https://github.com/shvchk/fallout-grub-theme/raw/master/install.sh | b
 flatpak install flathub md.obsidian.Obsidian
 
 # Installing AUR packages
-yay -Sy mullvad-vpn mullvad-browser librewolf vscodium-bin freetube-bin
-yay -Sy picom-jonaburg-git
+# They're seperated because errors lead to 
+# the entire command failing and not just skipping 
+# the missing package so splitting it up is for redundancy
+yay -Sy mullvad-vpn
+yay -S picom-jonaburg-git
+yay -S mullvad-browser
+yay -S librewolf
+yay -S vscodium-bin
+yay -S freetube-bin
+yay -S brave-bin
+yay -S rofi-calc
+yay -S github-desktop
+yay -S icecat
+yay -S cbonsai
+yay -S pfetch
+yay -S tty-clock
+
+
+
+
+
 
 clear && echo "Installation is done!" && sleep 1200 && reboot
