@@ -84,6 +84,28 @@ sudo usermod -aG libvirt $(whoami)
 
 # nested virtualization
 
+read -p "Whatkind of CPU do you have (I)ntel or (A)md: " cpuchoice
+
+if [ "$cpuchoice" == "Intel" ] || [ "$cpuchoice" == "i" ]; then
+    ### Intel Processor ###
+    sudo modprobe -r kvm_intel
+    sudo modprobe kvm_intel nested=1
+    echo "options kvm-intel nested=1" | sudo tee /etc/modprobe.d/kvm-intel.conf
+    systool -m kvm_intel -v | grep nested
+elif [ "$cpuchoice" == "Amd" ] || [ "$cpuchoice" == "a" ]; then
+    ### AMD Processor ###
+    sudo modprobe -r kvm_amd
+    sudo modprobe kvm_amd nested=1
+    echo "options kvm-amd nested=1" | sudo tee /etc/modprobe.d/kvm-amd.conf
+    systool -m kvm_amd -v | grep nested
+else
+    # Wrong input moron
+    echo "Invalid choice. Please enter 'I' or 'A'."
+fi
+
+
+
+: '
 ### Intel Processor ###
 sudo modprobe -r kvm_intel
 sudo modprobe kvm_intel nested=1
@@ -91,10 +113,13 @@ echo "options kvm-intel nested=1" | sudo tee /etc/modprobe.d/kvm-intel.conf
 systool -m kvm_intel -v | grep nested
 
 ### AMD Processor ###
-#sudo modprobe -r kvm_amd
-#sudo modprobe kvm_amd nested=1
-#echo "options kvm-amd nested=1" | sudo tee /etc/modprobe.d/kvm-amd.conf
-#systool -m kvm_amd -v | grep nested
+sudo modprobe -r kvm_amd
+sudo modprobe kvm_amd nested=1
+echo "options kvm-amd nested=1" | sudo tee /etc/modprobe.d/kvm-amd.conf
+systool -m kvm_amd -v | grep nested
+'
+
+
 
 # Fixing RC files
 git clone https://github.com/Emil8630/rc-files.git
