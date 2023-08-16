@@ -25,7 +25,8 @@ sudo sh /home/$usr/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
 sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety adobe-source-code-pro-fonts python-fonttools lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd ufw opendoas
 
 # Installs doas
-sudo touch /etc/doas.conf && sudo echo "permit persist $(whoami) as root" > /etc/doas.conf
+sudo touch /etc/doas.conf 
+sudo echo "permit persist $(whoami) as root" > /etc/doas.conf
 
 # Enabling dnscrypt
 sudo systemctl enable --now dnscrypt-proxy.socket
