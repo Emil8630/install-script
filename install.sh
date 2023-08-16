@@ -1,11 +1,7 @@
 #!/bin/bash
 
+usr = $(whoami)
 
-show_infobox() {
-    dialog --title "Welcome!" --infobox "My installation program is running in the background, so sit back and drink a cup of coffee or something alike\n\n$(date)" 10 50
-}
-
-install() {
 # Backup the original pacman.conf file
 sudo cp /etc/pacman.conf /etc/pacman.conf.backup
 
@@ -23,10 +19,10 @@ sudo pacman -Syu --noconfirm
 sudo hostnamectl set-hostname "arch"
 
 # Hardening network settings
-sudo sh $HOME/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
+sudo sh /home/$usr/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety spotify terminus-font adobe-source-code-pro-fonts python-fonttools lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd ufw opendoas
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety terminus-font adobe-source-code-pro-fonts python-fonttools lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd ufw opendoas
 
 # Installs doas
 sudo touch /etc/doas.conf && sudo echo "permit persist $(whoami) as root" > /etc/doas.conf
@@ -60,6 +56,15 @@ fi
 #Removing the cancerous iptables-nft package that wont go away and just f*cks up the entire QEMU installation
 sudo sh $HOME/github/bw-dwm/archcraft-dwm/shared/bin/iptables-removal.sh
 sleep 3
+echo "
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!      When it asks whether or not     !!!!
+!!!!        to remove the ip tables       !!!!
+!!!!             select (Y)es             !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+"
 sudo pacman -Syy archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
 sudo systemctl enable libvirtd.service
@@ -104,13 +109,6 @@ git clone https://github.com/Emil8630/wallpapers ~/wallpapers
 
 # Installing Picom
 git clone https://github.com/jonaburg/picom.git && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && find picom -type f -exec shred -n 5 -fzu {} \; -exec rm -r {} +
-}
-
-# Infobox
-install
-show_infobox
-wait
-clear
 
 ## Installing GRUB Theme
 #Fallout Theme
