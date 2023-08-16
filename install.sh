@@ -10,13 +10,20 @@ sudo sed -i '/\[multilib\]/,+1 s/^#//' /etc/pacman.conf
 curl -O https://blackarch.org/strap.sh
 chmod +x strap.sh
 sudo ./strap.sh
-sudo rm -rf strap.sh
+sudo shred -fzu strap.sh
 sudo pacman -Syu --noconfirm 
 
+#Changing Hostname
 sudo hostnamectl set-hostname "arch"
 
+# Hardening network settings
+sudo sh $HOME/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
+
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety spotify terminus-font adobe-source-code-pro-fonts python-fonttools lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 hsetroot geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety spotify terminus-font adobe-source-code-pro-fonts python-fonttools lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd ufw opendoas
+
+# Installs doas
+sudo touch /etc/doas.conf && sudo echo "permit persist $(whoami) as root" > /etc/doas.conf
 
 # Enabling dnscrypt
 sudo systemctl enable --now dnscrypt-proxy.socket
@@ -25,8 +32,9 @@ sudo systemctl enable --now dnscrypt-proxy.socket
 sudo sh <(curl -L https://nixos.org/nix/install) --daemon
 
 # Installing DWM
-git clone https://github.com/Emil8630/bw-dwm.git ~/bw-dwm
-sudo chown -R $(whoami) ~/bw-dwm && cd ~/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
+mkdir ~/github
+git clone https://github.com/Emil8630/bw-dwm.git ~/github/bw-dwm
+sudo chown -R $(whoami) ~/github/bw-dwm && cd ~/github/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/github/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
 
 # virtual machines with "qemu" and "virtual machine manger"
 # Checks for conflicts
@@ -41,8 +49,10 @@ if sudo pacman -Q iptables-nft >/dev/null 2>&1; then
 else
     :  # iptables-nft is not installed
 fi
-sudo rm -rf /usr/bin/iptables-nft /usr/bin/iptables-nft-restore /usr/bin/iptables-nft-restore@ /usr/bin/iptables-nft-save /usr/bin/iptables-nft-save@ /usr/bin/iptables /usr/bin/iptables-legacy /usr/bin/iptables-legacy-save /usr/bin/iptables-legacy-restore /usr/bin/iptables-restore /usr/bin/iptables-save /usr/bin/iptables-xml /usr/bin/iptables-translate /usr/bin/iptables-restore-translate /usr/share/iptables /etc/iptables
-sudo rm -f /usr/bin/iptables-apply
+#sudo rm -rf /usr/bin/iptables-nft /usr/bin/iptables-nft-restore /usr/bin/iptables-nft-restore@ /usr/bin/iptables-nft-save /usr/bin/iptables-nft-save@ /usr/bin/iptables /usr/bin/iptables-legacy /usr/bin/iptables-legacy-save /usr/bin/iptables-legacy-restore /usr/bin/iptables-restore /usr/bin/iptables-save /usr/bin/iptables-xml /usr/bin/iptables-translate /usr/bin/iptables-restore-translate /usr/share/iptables /etc/iptables
+#sudo rm -f /usr/bin/iptables-apply
+#Removing the cancerous iptables-nft package that wont go away and just f*cks up the entire QEMU installation
+sudo sh $HOME/github/bw-dwm/archcraft-dwm/shared/bin/iptables-removal.sh
 sleep 3
 sudo pacman -Syy archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
@@ -75,17 +85,20 @@ git clone https://github.com/Emil8630/rc-files.git
 cd rc-files
 cat .bashrc_input >> /home/$(whoami)/.bashrc && cat .zshrc_input >> /home/$(whoami)/.zshrc
 sudo cp .config/alacritty/alcritty.yml ~/.config/alacritty/alacritty.yml
-cd .. && sudo rm -r rc-files
+cd .. && sudo mv -f rc-files $HOME/github/
+
 
 # Install Neovim Configurations
 git clone https://github.com/Emil8630/nvim.git
+mkdir $HOME/.config/nvim
 mv nvim /home/$(whoami)/.config/nvim
 
 # Downloading Wallpapers
 git clone https://github.com/Emil8630/wallpapers ~/wallpapers
 
 # Installing Picom
-git clone https://github.com/jonaburg/picom.git && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && sudo rm -r picom
+git clone https://github.com/jonaburg/picom.git && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && find picom -type f -exec shred -n 5 -fzu {} \; -exec rm -r {} +
+
 
 ## Installing GRUB Theme
 #Fallout Theme
@@ -115,6 +128,8 @@ yay -S tty-clock
 
 
 
+clear && echo "Installation is done!
+All obsolete files and folders have been cleaned up.
+Your system will restart within 20 minutes to secure that all files have been properly written and the drive is safe to be unmounted without causing data loss.
 
-
-clear && echo "Installation is done!" && sleep 1200 && reboot
+Note: Using ^C at this stage may cause data loss although unlikely better be safe than sorry right." && sleep 1200 && reboot
