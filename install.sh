@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+show_infobox() {
+    dialog --title "Welcome!" --infobox "My installation program is running in the background, so sit back and drink a cup of coffee or something alike\n\n$(date)" 10 50
+}
+
+install() {
 # Backup the original pacman.conf file
 sudo cp /etc/pacman.conf /etc/pacman.conf.backup
 
@@ -98,7 +104,13 @@ git clone https://github.com/Emil8630/wallpapers ~/wallpapers
 
 # Installing Picom
 git clone https://github.com/jonaburg/picom.git && cd picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && find picom -type f -exec shred -n 5 -fzu {} \; -exec rm -r {} +
+}
 
+# Infobox
+install
+show_infobox
+wait
+clear
 
 ## Installing GRUB Theme
 #Fallout Theme
