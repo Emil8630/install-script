@@ -27,6 +27,8 @@ sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python
 # Installs doas
 sudo touch /etc/doas.conf 
 sudo echo "permit persist $(whoami) as root" > /etc/doas.conf
+echo "alias sudo='doas'" > .zshrc
+echo "alias sudo='doas'" > .bashrc
 
 # Enabling dnscrypt
 sudo systemctl enable --now dnscrypt-proxy.socket
