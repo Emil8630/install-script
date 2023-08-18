@@ -19,7 +19,8 @@ sudo pacman -Syu --noconfirm
 sudo hostnamectl set-hostname "arch"
 
 # Hardening network settings
-sudo sh /home/$usr/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
+#sudo sh /home/$usr/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
+sudo sh /home/$usr/github/suckless/hardening.sh
 
 # packages
 sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger lf libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety adobe-source-code-pro-fonts lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd ufw opendoas translate-shell
@@ -37,6 +38,7 @@ sudo systemctl enable --now dnscrypt-proxy.socket
 sudo sh <(curl -L https://nixos.org/nix/install) --daemon
 
 # Installing DWM
+sleep 5
 echo "
 
 
@@ -113,13 +115,13 @@ sudo usermod -aG libvirt $(whoami)
 
 read -p "Whatkind of CPU do you have (I)ntel or (A)md: " cpuchoice
 
-if [ "$cpuchoice" == "Intel" ] || [ "$cpuchoice" == "i" ]; then
+if [ "$cpuchoice" == "Intel" ] || [ "$cpuchoice" == "i" ] || [ "$cpuchoice" == "I" ]; then
     ### Intel Processor ###
     sudo modprobe -r kvm_intel
     sudo modprobe kvm_intel nested=1
     echo "options kvm-intel nested=1" | sudo tee /etc/modprobe.d/kvm-intel.conf
     systool -m kvm_intel -v | grep nested
-elif [ "$cpuchoice" == "Amd" ] || [ "$cpuchoice" == "a" ]; then
+elif [ "$cpuchoice" == "Amd" ] || [ "$cpuchoice" == "a" ] || [ "$cpuchoice" == "A" ]; then
     ### AMD Processor ###
     sudo modprobe -r kvm_amd
     sudo modprobe kvm_amd nested=1
