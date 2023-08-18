@@ -22,7 +22,7 @@ sudo hostnamectl set-hostname "arch"
 sudo sh /home/$usr/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety adobe-source-code-pro-fonts lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd ufw opendoas
+sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger lf libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety adobe-source-code-pro-fonts lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd ufw opendoas translate-shell
 
 # Installs doas
 sudo touch /etc/doas.conf 
@@ -35,9 +35,33 @@ sudo systemctl enable --now dnscrypt-proxy.socket
 sudo sh <(curl -L https://nixos.org/nix/install) --daemon
 
 # Installing DWM
-mkdir ~/github
-git clone https://github.com/Emil8630/bw-dwm.git ~/github/bw-dwm
-sudo chown -R $(whoami) ~/github/bw-dwm && cd ~/github/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/github/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
+echo "
+
+
+
+
+
+"
+read -p "Do you want to install ChadWM or DWM: " choice
+
+case $choice in
+    chadwm)
+        mkdir ~/github
+        git clone https://github.com/Emil8630/bw-dwm.git ~/github/bw-dwm
+        sudo chown -R $(whoami) ~/github/bw-dwm && cd ~/github/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/github/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
+        ;;
+    dwm)
+        git clone https://github.com/emil8630/suckless.git ~/github/suckless
+        sudo chown -R $(whoami) ~/github/suckless && cd ~/github/suckless && sh build.sh
+        ;;
+    *)
+        echo "Invalid choice"
+        ;;
+esac
+
+#mkdir ~/github
+#git clone https://github.com/Emil8630/bw-dwm.git ~/github/bw-dwm
+#sudo chown -R $(whoami) ~/github/bw-dwm && cd ~/github/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/github/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
 
 # virtual machines with "qemu" and "virtual machine manger"
 # Checks for conflicts
@@ -164,7 +188,7 @@ yay -S icecat
 yay -S cbonsai
 yay -S pfetch
 yay -S tty-clock
-
+yay -S didyoumean
 
 
 
