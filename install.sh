@@ -79,7 +79,8 @@ fi
 #sudo rm -rf /usr/bin/iptables-nft /usr/bin/iptables-nft-restore /usr/bin/iptables-nft-restore@ /usr/bin/iptables-nft-save /usr/bin/iptables-nft-save@ /usr/bin/iptables /usr/bin/iptables-legacy /usr/bin/iptables-legacy-save /usr/bin/iptables-legacy-restore /usr/bin/iptables-restore /usr/bin/iptables-save /usr/bin/iptables-xml /usr/bin/iptables-translate /usr/bin/iptables-restore-translate /usr/share/iptables /etc/iptables
 #sudo rm -f /usr/bin/iptables-apply
 #Removing the cancerous iptables-nft package that wont go away and just f*cks up the entire QEMU installation
-sudo sh $HOME/github/bw-dwm/archcraft-dwm/shared/bin/iptables-removal.sh
+#sudo sh $HOME/github/bw-dwm/archcraft-dwm/shared/bin/iptables-removal.sh
+sudo sh $HOME/github/suckless/dwm/iptables-removal.sh
 sleep 3
 echo "
 
