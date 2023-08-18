@@ -154,6 +154,55 @@ sudo cp .config/alacritty/alcritty.yml ~/.config/alacritty/alacritty.yml
 cd .. && sudo mv -f rc-files $HOME/github/
 
 
+makeuserjs(){
+	# Get the Arkenfox user.js and prepare it.
+	arkenfox="$pdir/arkenfox.js"
+	overrides="$pdir/user-overrides.js"
+	userjs="$pdir/user.js"
+	ln -fs "/home/$name/.config/firefox/larbs.js" "$overrides"
+	[ ! -f "$arkenfox" ] && curl -sL "https://raw.githubusercontent.com/arkenfox/user.js/master/user.js" > "$arkenfox"
+	cat "$arkenfox" "$overrides" > "$userjs"
+	chown "$name:wheel" "$arkenfox" "$userjs"
+	# Install the updating script.
+	mkdir -p /usr/local/lib /etc/pacman.d/hooks
+	cp "/home/$name/.local/bin/arkenfox-auto-update" /usr/local/lib/
+	chown root:root /usr/local/lib/arkenfox-auto-update
+	chmod 755 /usr/local/lib/arkenfox-auto-update
+	# Trigger the update when needed via a pacman hook.
+	echo "[Trigger]
+Operation = Upgrade
+Type = Package
+Target = firefox
+Target = librewolf
+Target = librewolf-bin
+[Action]
+Description=Update Arkenfox user.js
+When=PostTransaction
+Depends=arkenfox-user.js
+Exec=/usr/local/lib/arkenfox-auto-update" > /etc/pacman.d/hooks/arkenfox.hook
+}
+
+installffaddons(){
+	addonlist="ublock-origin decentraleyes istilldontcareaboutcookies privacy-badger17 skip-redirect libredirect user-agent-string-switcher"
+	addontmp="$(mktemp -d)"
+	trap "rm -fr $addontmp" HUP INT QUIT TERM PWR EXIT
+	IFS=' '
+	sudo -u "$name" mkdir -p "$pdir/extensions/"
+	for addon in $addonlist; do
+		addonurl="$(curl --silent "https://addons.mozilla.org/en-US/firefox/addon/${addon}/" | grep -o 'https://addons.mozilla.org/firefox/downloads/file/[^"]*')"
+		file="${addonurl##*/}"
+		sudo -u "$name" curl -LOs "$addonurl" > "$addontmp/$file"
+		id="$(unzip -p "$file" manifest.json | grep "\"id\"")"
+		id="${id%\"*}"
+		id="${id##*\"}"
+		sudo -u "$name" mv "$file" "$pdir/extensions/$id.xpi"
+	done
+#category-more-from-mozilla { display: none !important }" > "$pdir/chrome/userContent.css"
+}
+
+
+
+
 # Install Neovim Configurations
 git clone https://github.com/Emil8630/nvim.git
 mkdir $HOME/.config/nvim
@@ -191,8 +240,25 @@ yay -S pfetch
 yay -S tty-clock
 yay -S didyoumean
 
+# All this below to get Librewolf installed with add-ons and non-bad settings.
 
+browserdir="/home/$name/.librewolf"
+profilesini="$browserdir/profiles.ini"
 
+# Start librewolf headless so it generates a profile. Then get that profile in a variable.
+sudo -u "$name" librewolf --headless >/dev/null 2>&1 &
+sleep 1
+profile="$(sed -n "/Default=.*.default-release/ s/.*=//p" "$profilesini")"
+pdir="$browserdir/$profile"
+
+[ -d "$pdir" ] && makeuserjs
+
+[ -d "$pdir" ] && installffaddons
+
+# Kill the now unnecessary librewolf instance.
+pkill -u "$name" librewolf
+
+whiptail --title "Done!" --msgbox "Your install is now complete!" 10 33
 clear && echo "Installation is done!
 All obsolete files and folders have been cleaned up.
 Your system will restart within 20 minutes to secure that all files have been properly written and the drive is safe to be unmounted without causing data loss.
