@@ -1,6 +1,6 @@
 #!/bin/bash
 
-usr = $(whoami)
+usr=$(whoami)
 
 # Backup the original pacman.conf file
 sudo cp /etc/pacman.conf /etc/pacman.conf.backup
