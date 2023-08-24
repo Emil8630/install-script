@@ -8,7 +8,7 @@ kernel_version=$(uname -r)
 usr=$(whoami)
 
 if [[ $kernel_version == *"arch"* ]]; then
-    sudo pacman -S --noconfirm ufw fail2ban
+    sudo pacman -S --noconfirm ufw fail2ban netstat
 else
     sudo apt install -y ufw fail2ban
 fi
@@ -37,7 +37,7 @@ multi on
 EOF
 
 # --- Enable fail2ban
-sudo -U "$usr" cp $HOME/github/suckless/jail.local /etc/fail2ban/
+sudo -U $usr cp $HOME/github/suckless/jail.local /etc/fail2ban/
 sudo systemctl enable fail2ban
 sudo systemctl start fail2ban
 
