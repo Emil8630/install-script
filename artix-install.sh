@@ -5,8 +5,15 @@ usr=$(whoami)
 # Backup the original pacman.conf file
 sudo cp /etc/pacman.conf /etc/pacman.conf.backup
 
-# Enable the multilib repository by uncommenting the lines
-sudo sed -i '/\[multilib\]/,+1 s/^#//' /etc/pacman.conf
+# Get Arch repository on artix
+sudo sed -i '/\[lib32\]/,+1 s/^#//' /etc/pacman.conf
+echo -e "\n# Arch\n[extra]\nInclude = /etc/pacman.d/mirrorlist-arch\n\n[community]\nInclude = /etc/pacman.d/mirrorlist-arch\n\n[multilib]\nInclude = /etc/pacman.d/mirrorlist-arch" | sudo tee -a /etc/pacman.conf
+sudo pacman -Sy --noconfirm base-devel cmake gcc git artix-archlinux-support
+
+# Install yay
+git clone https://aur.archlinux.org/yay.git && cd yay
+makepkg -si
+cd .. && sudo rm -rf yay
 
 # black arch mirrors
 curl -O https://blackarch.org/strap.sh
@@ -16,56 +23,136 @@ sudo shred -fzu strap.sh
 sudo pacman -Syu --noconfirm 
 
 #Changing Hostname
-sudo hostnamectl set-hostname "arch"
+sudo hostnamectl set-hostname "artix"
 
 # Hardening network settings
 #sudo sh /home/$usr/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
 sudo sh $(pwd)/hardening.sh
 
 # packages
-sudo pacman -Syu --noconfirm xclip discord flatpak caja flameshot python3 python-pip git feh arandr acpi breeze nodejs npm yarn lxappearance materia-gtk-theme xonsh eom net-tools nim mesa mpv keepassxc alacritty dnscrypt-proxy curl thunar qbittorrent ranger lf libx11 pixman libdbus libconfig libev uthash libxinerama libxft freetype2 geany rofi polybar dunst mpd mpc maim xclip viewnior feh xfce4-power-manager xorg-xsetroot wmname ninja pulsemixer light xcolor zsh fish xfce4-settings zsh hsetroot flatpak wget meson curl cmake neovim exa bat variety adobe-source-code-pro-fonts lib32-fontconfig noto-fonts-emoji ttf-firacode-nerd ufw opendoas translate-shell
+# Installed seperately incase of removal from repos or else all installs will fail.
+sudo pacman -S --noconfirm xclip
+sudo pacman -S --noconfirm discord
+sudo pacman -S --noconfirm flatpak
+sudo pacman -S --noconfirm caja
+sudo pacman -S --noconfirm flameshot
+sudo pacman -S --noconfirm python3
+sudo pacman -S --noconfirm python-pip
+sudo pacman -S --noconfirm feh
+sudo pacman -S --noconfirm arandr
+sudo pacman -S --noconfirm acpi
+sudo pacman -S --noconfirm breeze
+sudo pacman -S --noconfirm nodejs
+sudo pacman -S --noconfirm npm
+sudo pacman -S --noconfirm yarn
+sudo pacman -S --noconfirm lxappearance
+sudo pacman -S --noconfirm materia-gtk-theme
+sudo pacman -S --noconfirm xonsh
+sudo pacman -S --noconfirm eom
+sudo pacman -S --noconfirm net-tools
+sudo pacman -S --noconfirm nim
+sudo pacman -S --noconfirm mesa
+sudo pacman -S --noconfirm mpv
+sudo pacman -S --noconfirm keepassxc
+sudo pacman -S --noconfirm alacritty
+sudo pacman -S --noconfirm curl
+sudo pacman -S --noconfirm thunar
+sudo pacman -S --noconfirm qbittorrent
+sudo pacman -S --noconfirm ranger
+sudo pacman -S --noconfirm lf
+sudo pacman -S --noconfirm libx11
+sudo pacman -S --noconfirm pixman
+sudo pacman -S --noconfirm libdbus
+sudo pacman -S --noconfirm libconfig
+sudo pacman -S --noconfirm libev
+sudo pacman -S --noconfirm uthash
+sudo pacman -S --noconfirm libxinerama
+sudo pacman -S --noconfirm libxft
+sudo pacman -S --noconfirm freetype2
+sudo pacman -S --noconfirm rofi
+sudo pacman -S --noconfirm polybar
+sudo pacman -S --noconfirm dunst
+sudo pacman -S --noconfirm mpd
+sudo pacman -S --noconfirm mpc
+sudo pacman -S --noconfirm maim
+sudo pacman -S --noconfirm xclip
+sudo pacman -S --noconfirm viewnior
+sudo pacman -S --noconfirm feh
+sudo pacman -S --noconfirm xorg-xsetroot
+sudo pacman -S --noconfirm wmname
+sudo pacman -S --noconfirm ninja
+sudo pacman -S --noconfirm pulsemixer
+sudo pacman -S --noconfirm light
+sudo pacman -S --noconfirm xcolor
+sudo pacman -S --noconfirm fish
+sudo pacman -S --noconfirm xfce4-settings
+sudo pacman -S --noconfirm zsh
+sudo pacman -S --noconfirm hsetroot
+sudo pacman -S --noconfirm flatpak
+sudo pacman -S --noconfirm wget
+sudo pacman -S --noconfirm meson
+sudo pacman -S --noconfirm curl
+sudo pacman -S --noconfirm neovim
+sudo pacman -S --noconfirm exa
+sudo pacman -S --noconfirm bat
+sudo pacman -S --noconfirm variety
+sudo pacman -S --noconfirm adobe-source-code-pro-fonts
+sudo pacman -S --noconfirm lib32-fontconfig
+sudo pacman -S --noconfirm noto-fonts-emoji
+sudo pacman -S --noconfirm ttf-firacode-nerd
+sudo pacman -S --noconfirm ufw
+sudo pacman -S --noconfirm opendoas
+sudo pacman -S --noconfirm translate-shell
+
 
 # Installs doas
 sudo touch /etc/doas.conf 
 sudo echo "permit persist $(whoami) as root" > /etc/doas.conf
-echo "alias sudo='doas'" > .zshrc
-echo "alias sudo='doas'" > .bashrc
-
-# Enabling dnscrypt
-sudo systemctl enable --now dnscrypt-proxy.socket
-
-# Getting NixOS package manager & packages
-sudo sh <(curl -L https://nixos.org/nix/install) --daemon
+echo "alias sudo='doas'" >> .zshrc
+echo "alias sudo='doas'" >> .bashrc
 
 # Installing DWM
 sleep 5
-echo "
-
-
-
-
-
-"
-read -p "Do you want to install ChadWM or DWM: " choice
-
-case $choice in
-    chadwm)
-        mkdir ~/github
-        git clone https://github.com/Emil8630/bw-dwm.git ~/github/bw-dwm
-        sudo chown -R $(whoami) ~/github/bw-dwm && cd ~/github/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/github/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
-        ;;
-    dwm)
         git clone https://github.com/emil8630/suckless.git ~/github/suckless
         sudo chown -R $(whoami) ~/github/suckless && cd ~/github/suckless && sh build.sh
+
+#Changes power.sh to work with runit
+# Define the path to the power.sh file
+power_script_path=~/github/suckless/power.sh
+
+# Check if the power.sh file exists
+if [ -f "$power_script_path" ]; then
+    # Replace the contents of power.sh with the provided script
+    cat <<EOL > "$power_script_path"
+#!/bin/bash
+
+options=("🔴 Shutdown" "🔄 Reboot" "🔒 Lock" "👤 Logout")
+selected_option=\$(printf '%s\\n' "\${options[@]}" | dmenu -i -p "Power Menu:")
+
+case "\$selected_option" in
+    "🔴 Shutdown")
+        sv t 0
+        ;;
+    "🔄 Reboot")
+        sv t 1
+        ;;
+    "👤 Logout")
+        pkill -u "\$USER"
+        ;;
+    "🔒 Lock")
+        slock -m "The screen is locked"
+        #betterlockscreen -q -l 
         ;;
     *)
-        echo "Invalid choice"
+        echo "Invalid option"
         ;;
 esac
+EOL
 
-#mkdir ~/github
-#git clone https://github.com/Emil8630/bw-dwm.git ~/github/bw-dwm
-#sudo chown -R $(whoami) ~/github/bw-dwm && cd ~/github/bw-dwm/archcraft-dwm/source && sudo make clean install && cd ~/github/bw-dwm/archcraft-dwm/ && makepkg -if --cleanbuild
+    echo "power.sh has been updated."
+else
+    echo "power.sh does not exist in ~/github/suckless."
+fi
 
 # virtual machines with "qemu" and "virtual machine manger"
 # Checks for conflicts
@@ -101,8 +188,27 @@ echo "
 "
 sudo pacman -Syy archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs
 
-sudo systemctl enable libvirtd.service
-sudo systemctl start libvirtd.service
+#Enabling service
+# Create the libvirtd service directory
+sudo mkdir -p /etc/sv/libvirtd
+
+# Create the run script for libvirtd
+cat <<EOL > /etc/sv/libvirtd/run
+#!/bin/sh
+exec /usr/bin/libvirtd
+EOL
+
+# Make the run script executable
+sudo chmod +x /etc/sv/libvirtd/run
+
+# Create a symbolic link to enable the service
+sudo ln -s /etc/sv/libvirtd /run/runit/service/
+
+# Start the libvirtd service
+sudo sv start libvirtd
+
+# Optional: Enable automatic startup
+sudo ln -s /etc/sv/libvirtd /etc/runit/runsvdir/default/
 
 # check proper install in : /etc/libvirt/libvirtd.conf
 # line 85 : unix_sock_group = "libvirt"
@@ -154,7 +260,7 @@ systool -m kvm_amd -v | grep nested
 git clone https://github.com/Emil8630/rc-files.git
 cd rc-files
 cat .bashrc_input >> /home/$(whoami)/.bashrc && cat .zshrc_input >> /home/$(whoami)/.zshrc
-sudo cp .config/alacritty/alcritty.yml ~/.config/alacritty/alacritty.yml
+sudo cp .config/alacritty/alacritty.yml ~/.config/alacritty/alacritty.yml
 cd .. && sudo mv -f rc-files $HOME/github/
 
 
@@ -187,7 +293,7 @@ Exec=/usr/local/lib/arkenfox-auto-update" > /etc/pacman.d/hooks/arkenfox.hook
 }
 
 installffaddons(){
-	addonlist="ublock-origin decentraleyes istilldontcareaboutcookies privacy-badger17 skip-redirect libredirect user-agent-string-switcher"
+	addonlist="ublock-origin localcdn-fork-of-decentraleyes noscript skip-redirect umatrix user-agent-string-switcher"
 	addontmp="$(mktemp -d)"
 	trap "rm -fr $addontmp" HUP INT QUIT TERM PWR EXIT
 	IFS=' '
@@ -267,4 +373,4 @@ clear && echo "Installation is done!
 All obsolete files and folders have been cleaned up.
 Your system will restart within 20 minutes to secure that all files have been properly written and the drive is safe to be unmounted without causing data loss.
 
-Note: Using ^C at this stage may cause data loss although unlikely better be safe than sorry right." && sleep 1200 && reboot
+Note: Using ^C at this stage may cause data loss although unlikely better be safe than sorry right." && sleep 1200 && sv t 1
