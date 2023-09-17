@@ -302,4 +302,4 @@ yay -S tty-clock
 yay -S didyoumean
 
 whiptail --title "Done!" --msgbox "Your install is now complete!" 10 33
-clear && echo "Installation is done!" && sleep 25 && sudo reboot
+sudo reboot
