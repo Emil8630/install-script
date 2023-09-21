@@ -1,6 +1,7 @@
 #!/bin/sh
 
-#-----------------------
+#-------------------------
+# Need to be ran with sudo
 #--Required Packages-
 #-ufw
 #-fail2ban
