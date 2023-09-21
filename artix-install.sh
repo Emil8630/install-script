@@ -121,6 +121,16 @@ sleep 5
 echo -e "[Desktop Entry]\nEncoding=UTF-8\nName=dwm\nComment=Dynamic window manager\nExec=dwm\nIcon=dwm\nType=XSession" | sudo tee /usr/share/xsessions/dwm.desktop > /dev/null
 sudo chmod 644 /usr/share/xsessions/dwm.desktop
 
+# Make the autostart.sh start on boot
+sudo mkdir -p /etc/sv/autostart 
+echo '#!/bin/sh' | sudo tee /etc/sv/autostart/run > /dev/null 
+echo 'exec /home/$(whoami)/github/suckless/autostart.sh' | sudo tee -a /etc/sv/autostart/run > /dev/null
+sudo chmod +x /etc/sv/autostart/run 
+sudo ln -s /etc/sv/autostart /var/service/ 
+sudo sv start autostart 
+sudo ln -s /etc/sv/autostart /etc/runit/runsvdir/default/
+
+
 # Changes power.sh to work with runit
 # Define the path to the power.sh file
 power_script_path="~/github/suckless/power.sh"
