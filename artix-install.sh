@@ -5,6 +5,10 @@ usr=$(whoami)
 # Prompt the user for their city
 read -p "Enter your city for weather information: " location
 
+# Wipe .zshrc and .bashrc
+echo "#" > ~/.bashrc
+echo "#" > ~/.zshrc
+
 # Add the export line to ~/.zshrc
 echo "export WEATHER_LOCATION=\"$location\"" >> ~/.zshrc
 
@@ -16,7 +20,7 @@ echo "export WEATHER_LOCATION=\"$location\"" >> ~/.bashrc
 sudo cp /etc/pacman.conf /etc/pacman.conf.backup
 
 # Get Arch repository on artix
-sudo pacman -Sy --noconfirm base-devel cmake gcc git artix-archlinux-support
+sudo pacman -Sy --noconfirm base-devel cmake gcc git artix-archlinux-support go
 sudo pacman-key --populate archlinux
 sudo sed -i '/\[lib32\]/,+1 s/^#//' /etc/pacman.conf
 echo -e "\n# Arch\n[extra]\nInclude = /etc/pacman.d/mirrorlist-arch\n\n[community]\nInclude = /etc/pacman.d/mirrorlist-arch\n\n[multilib]\nInclude = /etc/pacman.d/mirrorlist-arch" | sudo tee -a /etc/pacman.conf
@@ -85,9 +89,7 @@ sudo pacman -S --noconfirm polybar
 sudo pacman -S --noconfirm dunst
 sudo pacman -S --noconfirm mpd
 sudo pacman -S --noconfirm mpc
-sudo pacman -S --noconfirm maim
 sudo pacman -S --noconfirm xclip
-sudo pacman -S --noconfirm viewnior
 sudo pacman -S --noconfirm feh
 sudo pacman -S --noconfirm xorg-xsetroot
 sudo pacman -S --noconfirm wmname
@@ -118,7 +120,7 @@ sudo pacman -S --noconfirm translate-shell
 
 # Installs doas
 sudo touch /etc/doas.conf 
-sudo echo "permit persist $(whoami) as root" > /etc/doas.conf
+sudo sh -c 'echo "permit persist $(whoami) as root" > /etc/doas.conf'
 echo "alias sudo='doas'" >> .zshrc
 echo "alias sudo='doas'" >> .bashrc
 
@@ -291,6 +293,7 @@ cd .. && sudo mv -f rc-files $HOME/github/
 
 # Install Neovim Configurations
 git clone https://github.com/Emil8630/nvim.git
+sudo rm -rf $HOME/.config/nvim
 mkdir $HOME/.config/nvim
 mv nvim /home/$(whoami)/.config/nvim
 
