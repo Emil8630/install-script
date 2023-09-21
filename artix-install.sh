@@ -6,9 +6,10 @@ usr=$(whoami)
 sudo cp /etc/pacman.conf /etc/pacman.conf.backup
 
 # Get Arch repository on artix
+sudo pacman -Sy --noconfirm base-devel cmake gcc git artix-archlinux-support
+sudo pacman-key --populate archlinux
 sudo sed -i '/\[lib32\]/,+1 s/^#//' /etc/pacman.conf
 echo -e "\n# Arch\n[extra]\nInclude = /etc/pacman.d/mirrorlist-arch\n\n[community]\nInclude = /etc/pacman.d/mirrorlist-arch\n\n[multilib]\nInclude = /etc/pacman.d/mirrorlist-arch" | sudo tee -a /etc/pacman.conf
-sudo pacman -Sy --noconfirm base-devel cmake gcc git artix-archlinux-support
 
 # Install yay
 git clone https://aur.archlinux.org/yay.git && cd yay
