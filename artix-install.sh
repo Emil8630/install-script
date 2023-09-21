@@ -21,14 +21,14 @@ curl -O https://blackarch.org/strap.sh
 chmod +x strap.sh
 sudo ./strap.sh
 sudo shred -fzu strap.sh
-sudo pacman -Syu --noconfirm 
+sudo pacman -Syyu --noconfirm 
 
 #Changing Hostname
 sudo hostnamectl set-hostname "artix"
 
 # Hardening network settings
 #sudo sh /home/$usr/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
-sudo sh $(pwd)/hardening.sh
+sudo sh $(pwd)/artix-hardening.sh
 
 # packages
 # Installed seperately incase of removal from repos or else all installs will fail.
@@ -119,7 +119,7 @@ sleep 5
 
 #Changes power.sh to work with runit
 # Define the path to the power.sh file
-power_script_path=~/github/suckless/power.sh
+power_script_path="~/github/suckless/power.sh"
 
 # Check if the power.sh file exists
 if [ -f "$power_script_path" ]; then
