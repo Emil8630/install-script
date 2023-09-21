@@ -6,7 +6,7 @@
 #-fail2ban
 
 kernel_version=$(uname -r)
-usr=$(whoami)
+usr=$1
 
 if [ "$kernel_version" = *"arch"* ]; then
     pacman -S --noconfirm ufw fail2ban netstat
@@ -37,7 +37,7 @@ multi on
 EOF
 
 # --- Enable fail2ban
-cp $HOME/github/suckless/jail.local /etc/fail2ban/
+cp /home/$usr/github/suckless/jail.local /etc/fail2ban/
 ln -s /etc/runit/sv/fail2ban /etc/service/
 sv start fail2ban
 

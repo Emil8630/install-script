@@ -28,7 +28,7 @@ sudo hostnamectl set-hostname "artix"
 
 # Hardening network settings
 #sudo sh /home/$usr/github/bw-dwm/archcraft-dwm/shared/bin/hardening.sh
-sudo sh $(pwd)/artix-hardening.sh
+sudo sh $(pwd)/artix-hardening.sh $usr
 
 # packages
 # Installed seperately incase of removal from repos or else all installs will fail.
