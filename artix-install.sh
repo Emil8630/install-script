@@ -131,10 +131,10 @@ selected_option=\$(printf '%s\\n' "\${options[@]}" | dmenu -i -p "Power Menu:")
 
 case "\$selected_option" in
     "🔴 Shutdown")
-        sv t 0
+        loginctl poweroff
         ;;
     "🔄 Reboot")
-        sv t 1
+        loginctl reboot
         ;;
     "👤 Logout")
         pkill -u "\$USER"
