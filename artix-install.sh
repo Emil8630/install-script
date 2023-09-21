@@ -117,7 +117,11 @@ sleep 5
         git clone https://github.com/emil8630/suckless.git ~/github/suckless
         sudo chown -R $(whoami) ~/github/suckless && cd ~/github/suckless && sh build.sh
 
-#Changes power.sh to work with runit
+# Adds DWM to lightDM which is the standard display manager on artix
+echo -e "[Desktop Entry]\nEncoding=UTF-8\nName=dwm\nComment=Dynamic window manager\nExec=dwm\nIcon=dwm\nType=XSession" | sudo tee /usr/share/xsessions/dwm.desktop > /dev/null
+sudo chmod 644 /usr/share/xsessions/dwm.desktop
+
+# Changes power.sh to work with runit
 # Define the path to the power.sh file
 power_script_path="~/github/suckless/power.sh"
 
