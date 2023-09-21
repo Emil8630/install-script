@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+
 #-----------------------
 #--Required Packages-
 #-ufw
@@ -7,12 +8,11 @@
 kernel_version=$(uname -r)
 usr=$(whoami)
 
-if [[ $kernel_version == *"arch"* ]]; then
+if [ "$kernel_version" = *"arch"* ]; then
     sudo pacman -S --noconfirm ufw fail2ban netstat
 else
     sudo apt install -y ufw fail2ban
 fi
-
 
 # --- Setup UFW rules
 sudo ufw limit 22/tcp  
@@ -38,8 +38,9 @@ EOF
 
 # --- Enable fail2ban
 sudo -U $usr cp $HOME/github/suckless/jail.local /etc/fail2ban/
-sudo systemctl enable fail2ban
-sudo systemctl start fail2ban
+sudo ln -s /etc/runit/sv/fail2ban /etc/service/
+sudo sv start fail2ban
 
 echo "listening ports"
 sudo netstat -tunlp
+
