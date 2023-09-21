@@ -2,6 +2,16 @@
 
 usr=$(whoami)
 
+# Prompt the user for their city
+read -p "Enter your city for weather information: " location
+
+# Add the export line to ~/.zshrc
+echo "export WEATHER_LOCATION=\"$location\"" >> ~/.zshrc
+
+# Add the export line to ~/.bashrc
+echo "export WEATHER_LOCATION=\"$location\"" >> ~/.bashrc
+
+
 # Backup the original pacman.conf file
 sudo cp /etc/pacman.conf /etc/pacman.conf.backup
 
