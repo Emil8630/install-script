@@ -1,5 +1,9 @@
 #!/bin/bash
 
+########################################
+# Updates for this script have stopped #
+########################################
+
 usr=$(whoami)
 
 # Prompt the user for their city
