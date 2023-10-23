@@ -5,6 +5,15 @@ usr=$(whoami)
 # Prompt the user for their city
 read -p "Enter your city for weather information: " location
 
+# Additional packages prompt
+read -p "Do you want to install additional packages? (y/N): " install_additional
+if [ "$install_additional" == "y" ] || [ "$install_additional" == "Y" ]; then
+    read -p "Enter additional packages to install (space-separated): " additional_packages
+    for package in $additional_packages; do
+        sudo pacman -Syu --noconfirm "$package"
+    done
+fi
+
 # Wipe .zshrc and .bashrc
 echo "#" > ~/.bashrc
 echo "#" > ~/.zshrc
@@ -29,12 +38,13 @@ git clone https://aur.archlinux.org/yay.git ~/yay && cd ~/yay
 makepkg -si
 cd .. 
 
-# black arch mirrors
+# Installing black arch mirrors and pentesting tools
 curl -O https://blackarch.org/strap.sh
 chmod +x strap.sh
 sudo ./strap.sh
 sudo shred -fzu strap.sh
 sudo pacman -Syyu --noconfirm 
+sudo pacman -S --noconfirm nmap gobuster wireshark-qt burpsuite metasploit aircrack-ng sqlmap ettercap john oclhashcat wifite beef
 
 # Changing Hostname
 sudo hostnamectl set-hostname "artix"
@@ -50,88 +60,94 @@ echo "*/360 * * * * /bin/bash /home/less/github/suckless/dellogs.sh" | crontab -
 sudo sh $(pwd)/artix-hardening.sh $usr
 
 # packages
-# Installed seperately incase of removal from repos or else all installs will fail.
-sudo pacman -S --noconfirm xclip
-sudo pacman -S --noconfirm discord
-#sudo pacman -S --noconfirm flatpak
-sudo pacman -S --noconfirm caja
-sudo pacman -S --noconfirm flameshot
-sudo pacman -S --noconfirm python3
-sudo pacman -S --noconfirm python-pip
-sudo pacman -S --noconfirm feh
-sudo pacman -S --noconfirm arandr
-sudo pacman -S --noconfirm acpi
-sudo pacman -S --noconfirm breeze
-sudo pacman -S --noconfirm nodejs
-sudo pacman -S --noconfirm npm
-sudo pacman -S --noconfirm yarn
-sudo pacman -S --noconfirm lxappearance
-sudo pacman -S --noconfirm materia-gtk-theme
-sudo pacman -S --noconfirm xonsh
-sudo pacman -S --noconfirm eom
-sudo pacman -S --noconfirm net-tools
-sudo pacman -S --noconfirm nim
-sudo pacman -S --noconfirm mesa
-sudo pacman -S --noconfirm mpv
-sudo pacman -S --noconfirm keepassxc
-sudo pacman -S --noconfirm alacritty
-sudo pacman -S --noconfirm curl
-sudo pacman -S --noconfirm thunar
-sudo pacman -S --noconfirm qbittorrent
-sudo pacman -S --noconfirm ranger
-sudo pacman -S --noconfirm lf
-sudo pacman -S --noconfirm libx11
-sudo pacman -S --noconfirm pixman
-sudo pacman -S --noconfirm libdbus
-sudo pacman -S --noconfirm libconfig
-sudo pacman -S --noconfirm libev
-sudo pacman -S --noconfirm uthash
-sudo pacman -S --noconfirm libxinerama
-sudo pacman -S --noconfirm libxft
-sudo pacman -S --noconfirm freetype2
-sudo pacman -S --noconfirm rofi
-sudo pacman -S --noconfirm polybar
-sudo pacman -S --noconfirm dunst
-sudo pacman -S --noconfirm mpd
-sudo pacman -S --noconfirm mpc
-sudo pacman -S --noconfirm xclip
-sudo pacman -S --noconfirm feh
-sudo pacman -S --noconfirm xorg-xsetroot
-sudo pacman -S --noconfirm wmname
-sudo pacman -S --noconfirm ninja
-sudo pacman -S --noconfirm pulsemixer
-sudo pacman -S --noconfirm light
-sudo pacman -S --noconfirm xcolor
-sudo pacman -S --noconfirm fish
-sudo pacman -S --noconfirm xfce4-settings
-sudo pacman -S --noconfirm zsh
-sudo pacman -S --noconfirm hsetroot
-sudo pacman -S --noconfirm flatpak
-sudo pacman -S --noconfirm wget
-sudo pacman -S --noconfirm meson
-sudo pacman -S --noconfirm curl
-sudo pacman -S --noconfirm neovim
-sudo pacman -S --noconfirm exa
-sudo pacman -S --noconfirm bat
-sudo pacman -S --noconfirm variety
-sudo pacman -S --noconfirm adobe-source-code-pro-fonts
-sudo pacman -S --noconfirm lib32-fontconfig
-sudo pacman -S --noconfirm noto-fonts-emoji
-sudo pacman -S --noconfirm ttf-firacode-nerd
-sudo pacman -S --noconfirm ufw
-sudo pacman -S --noconfirm opendoas
-sudo pacman -S --noconfirm translate-shell
-sudo pacman -S --noconfirm lynx 
-sudo pacman -S --noconfirm notmuch
-sudo pacman -S --noconfirm abook
-sudo pacman -S --noconfirm mpop
-sudo pacman -S --noconfirm urlview
-sudo pacman -S --noconfirm pass
-sudo pacman -S --noconfirm msmtp
-sudo pacman -S --noconfirm isync
-sudo pacman -S --noconfirm curl
-sudo pacman -S --noconfirm neomutt
-sudo pacman -S --noconfirm obsidian
+
+packages_to_install=(
+    "xclip"
+    "discord"
+    "caja"
+    "flameshot"
+    "python3"
+    "python-pip"
+    "feh"
+    "arandr"
+    "acpi"
+    "breeze"
+    "nodejs"
+    "npm"
+    "yarn"
+    "lxappearance"
+    "materia-gtk-theme"
+    "xonsh"
+    "eom"
+    "net-tools"
+    "nim"
+    "mesa"
+    "mpv"
+    "keepassxc"
+    "alacritty"
+    "curl"
+    "thunar"
+    "qbittorrent"
+    "ranger"
+    "lf"
+    "libx11"
+    "pixman"
+    "libdbus"
+    "libconfig"
+    "libev"
+    "uthash"
+    "libxinerama"
+    "libxft"
+    "freetype2"
+    "rofi"
+    "polybar"
+    "dunst"
+    "mpd"
+    "mpc"
+    "xclip"
+    "feh"
+    "xorg-xsetroot"
+    "wmname"
+    "ninja"
+    "pulsemixer"
+    "light"
+    "xcolor"
+    "fish"
+    "xfce4-settings"
+    "zsh"
+    "hsetroot"
+    "flatpak"
+    "wget"
+    "meson"
+    "curl"
+    "neovim"
+    "exa"
+    "bat"
+    "variety"
+    "adobe-source-code-pro-fonts"
+    "lib32-fontconfig"
+    "noto-fonts-emoji"
+    "ttf-firacode-nerd"
+    "ufw"
+    "opendoas"
+    "translate-shell"
+    "lynx"
+    "notmuch"
+    "abook"
+    "mpop"
+    "urlview"
+    "pass"
+    "msmtp"
+    "isync"
+    "curl"
+    "neomutt"
+    "obsidian"
+)
+
+for package in "${packages_to_install[@]}"; do
+    sudo pacman -S --noconfirm "$package"
+done
+
 
 # Install mutt-wizard
 git clone https://github.com/lukesmithxyz/mutt-wizard ~/mutt-wizard
@@ -347,21 +363,26 @@ wget -O - https://github.com/shvchk/fallout-grub-theme/raw/master/install.sh | b
 #flatpak install flathub md.obsidian.Obsidian
 
 # Installing AUR packages
-# They're seperated because errors lead to 
-# the entire command failing and not just skipping 
-# the missing package so splitting it up is for redundancy
-yay -Sy mullvad-vpn
-#yay -S picom-jonaburg-git
-yay -S mullvad-browser
-yay -S librewolf
-yay -S vscodium-bin
-yay -S freetube-bin
-yay -S brave-bin
-yay -S github-desktop
-#yay -S icecat
-yay -S pfetch
-yay -S tty-clock
-yay -S didyoumean
+
+yay_packages_to_install=(
+    "mullvad-vpn-bin"
+    "librewolf-bin"
+    "vscodium-bin"
+    "freetube-bin"
+    "thorium-browser-bin"
+    "github-desktop-bin"
+    "pfetch"
+    "tty-clock"
+    "didyoumean"
+#    "icecat"
+#    "picom-jonaburg-git"
+#    "mullvad-browser-bin"
+)
+
+# Install AUR packages using yay
+for package in "${yay_packages_to_install[@]}"; do
+    yay -S --noconfirm "$package"
+done
 
 whiptail --title "Done!" --msgbox "Your install is now complete!" 10 33
 loginctl reboot
