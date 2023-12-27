@@ -63,6 +63,7 @@ sudo sh $(pwd)/artix-hardening.sh $usr
 
 packages_to_install=(
     "xclip"
+    "macchanger"
     "discord"
     "caja"
     "flameshot"
@@ -147,6 +148,16 @@ packages_to_install=(
 for package in "${packages_to_install[@]}"; do
     sudo pacman -S --noconfirm "$package"
 done
+
+# Detect network interfaces
+interfaces=$(ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}')
+
+# Configure macchanger for each interface
+for interface in $interfaces; do
+    sudo macchanger -r $interface
+done
+
+echo "Mac addresses changed for all network interfaces."
 
 
 # Install mutt-wizard
@@ -361,6 +372,7 @@ wget -O - https://github.com/shvchk/fallout-grub-theme/raw/master/install.sh | b
 
 # flatpaks
 #flatpak install flathub md.obsidian.Obsidian
+flatpak install flathub com.github.iwalton3.jellyfin-media-player
 
 # Installing AUR packages
 
@@ -374,6 +386,8 @@ yay_packages_to_install=(
     "pfetch"
     "tty-clock"
     "didyoumean"
+    "pyradio"
+    "musikcube-bin"
 #    "icecat"
 #    "picom-jonaburg-git"
 #    "mullvad-browser-bin"
