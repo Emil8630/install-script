@@ -1,6 +1,13 @@
 #!/bin/bash
 
 usr=$(whoami)
+usr_home="/home/$usr"
+
+# Initializing the keyring
+sudo pacman -Sy --needed --noconfirm archlinux-keyring && pacman -Su --noconfirm
+pacman-key --init
+pacman-key --populate
+clear
 
 # Prompt the user for their city
 read -p "Enter your city for weather information: " location
@@ -14,15 +21,18 @@ if [ "$install_additional" == "y" ] || [ "$install_additional" == "Y" ]; then
     done
 fi
 
+# Input for option to detect other OS in GRUB
+read -p "Are you dual-booting this install? (y/N): " dualboot
+
 # Wipe .zshrc and .bashrc
 echo "#" > ~/.bashrc
 echo "#" > ~/.zshrc
 
 # Add the export line to ~/.zshrc
-echo "export WEATHER_LOCATION=\"$location\"" >> ~/.zshrc
+#echo "export WEATHER_LOCATION=\"$location\"" >> ~/.zshrc
 
 # Add the export line to ~/.bashrc
-echo "export WEATHER_LOCATION=\"$location\"" >> ~/.bashrc
+#echo "export WEATHER_LOCATION=\"$location\"" >> ~/.bashrc
 
 # Backup the original pacman.conf file
 sudo cp /etc/pacman.conf /etc/pacman.conf.backup
@@ -44,10 +54,40 @@ sudo pacman -S --noconfirm nmap gobuster wireshark-qt burpsuite metasploit aircr
 sudo hostnamectl set-hostname "arch"
 
 # Add cronjobs
-usr_home="/home/$usr"
-echo "*/10 * * * * /usr/bin/newsboat -x reload" | crontab -
-echo "*/2 * * * * /usr/local/bin/mailsync > ~/mailsync_dump 2>&1" | crontab -
-echo "*/360 * * * * /bin/bash /home/less/github/suckless/dellogs.sh" | crontab -
+
+#echo "*/10 * * * * /usr/bin/newsboat -x reload" | crontab -
+#echo "*/10 * * * * /usr/bin/stow ~/dotfiles" | crontab -
+#echo "*/2 * * * * /usr/local/bin/mailsync > ~/mailsync_dump 2>&1" | crontab -
+#echo "*/360 * * * * /bin/bash /home/less/github/suckless/dellogs.sh" | crontab -
+
+# Define the new cron jobs
+CRON_JOB1="*/360 * * * * /bin/bash /home/less/github/suckless/dellogs.sh"
+CRON_JOB2="*/10 * * * * /usr/bin/newsboat -x reload"
+CRON_JOB3="*/10 * * * * /usr/bin/stow ~/github/dotfiles"
+
+# Check if the cron jobs already exist to avoid duplicates
+if ! crontab -l | grep -q "$CRON_JOB1"; then
+    (crontab -l; echo "$CRON_JOB1") | crontab -
+    echo "Added cron job: $CRON_JOB1"
+else
+    echo "Cron job already exists: $CRON_JOB1"
+fi
+
+if ! crontab -l | grep -q "$CRON_JOB2"; then
+    (crontab -l; echo "$CRON_JOB2") | crontab -
+    echo "Added cron job: $CRON_JOB2"
+else
+    echo "Cron job already exists: $CRON_JOB2"
+for ((i = 0; i < 10; i++)); do
+  echo "$i"
+done
+if ! crontab -l | grep -q "$CRON_JOB3"; then
+    (crontab -l; echo "$CRON_JOB3") | crontab -
+    echo "Added cron job: $CRON_JOB3"
+else
+    echo "Cron job already exists: $CRON_JOB3"
+fi
+
 
 # packages
 
@@ -86,9 +126,11 @@ packages_to_install=(
     "curl"
     "thunar"
     "qbittorrent"
+    "xorg-xbacklight"
     "ranger"
     "lf"
     "libx11"
+    "dnsutils"
     "pixman"
     "libdbus"
     "libconfig"
@@ -97,6 +139,7 @@ packages_to_install=(
     "libxinerama"
     "libxft"
     "freetype2"
+    "qt5-graphicaleffects"
     "rofi"
     "polybar"
     "dunst"
@@ -118,6 +161,7 @@ packages_to_install=(
     "wget"
     "meson"
     "curl"
+    "stow"
     "neovim"
     "exa"
     "bat"
@@ -128,19 +172,23 @@ packages_to_install=(
     "ttf-firacode-nerd"
     "ttf-jetbrains-mono-nerd"
     "ufw"
+    "xdotool"
     "opendoas"
     "translate-shell"
     "lynx"
+    "cron"
     "notmuch"
     "abook"
     "mpop"
     "urlview"
     "pass"
+    "tealdeer"
     "msmtp"
     "isync"
     "curl"
     "neomutt"
     "obsidian"
+    "nextcloud-client"
     "bash-completions"
     "zoxide"
 )
@@ -182,9 +230,14 @@ sleep 5
 git clone https://github.com/emil8630/suckless.git ~/github/suckless
 sudo chown -R $(whoami) ~/github/suckless && cd ~/github/suckless && sh build.sh
 
-# Adds DWM to lightDM which is the standard display manager on artix
+# Adds DWM to xsessions
 echo -e "[Desktop Entry]\nEncoding=UTF-8\nName=dwm\nComment=Dynamic window manager\nExec=dwm\nIcon=dwm\nType=XSession" | sudo tee /usr/share/xsessions/dwm.desktop > /dev/null
 sudo chmod 644 /usr/share/xsessions/dwm.desktop
+
+# Install sddm theme
+git clone https://github.com/RadRussianRus/sddm-slice.git ~/github/sddm-slice/
+cp -r sddm-slice /usr/share/sddm/themes/sddm-slice
+sudo sed -i 's/^Current=.*/Current=sddm-slice/' /usr/lib/sddm/sddm.conf.d/default.conf
 
 # Make the autostart.sh start on boot
 sudo tee /etc/systemd/system/autostart.service > /dev/null << 'EOF'
@@ -202,44 +255,35 @@ sudo systemctl daemon-reload
 sudo systemctl enable autostart
 sudo systemctl start autostart
 
+# Take action on dualboot detection
+if [ "$dualboot" == "y" ] || [ "$dualboot" == "Y" ]; then
+  GRUB_FILE="/etc/default/grub"
+  LINE_TO_UNCOMMENT="#GRUB_DISABLE_OS_PROBER=false"
+  UNCOMMENTED_LINE="GRUB_DISABLE_OS_PROBER=false"
 
-# Changes power.sh to work with runit
-# Define the path to the power.sh file
-power_script_path="~/github/suckless/power.sh"
+  if [ ! -f "$GRUB_FILE" ]; then
+    echo -e "\e[31mError: $GRUB_FILE does not exist. Skipping step...\e[0m"
+  fi
 
-# Check if the power.sh file exists
-if [ -f "$power_script_path" ]; then
-    # Replace the contents of power.sh with the provided script
-    cat <<EOL > "$power_script_path"
-#!/bin/bash
-
-options=("🔴 Shutdown" "🔄 Reboot" "🔒 Lock" "👤 Logout")
-selected_option=\$(printf '%s\\n' "\${options[@]}" | dmenu -i -p "Power Menu:")
-
-case "\$selected_option" in
-    "🔴 Shutdown")
-        loginctl poweroff
-        ;;
-    "🔄 Reboot")
-        loginctl reboot
-        ;;
-    "👤 Logout")
-        pkill -u "\$USER"
-        ;;
-    "🔒 Lock")
-        slock -m "The screen is locked"
-        #betterlockscreen -q -l 
-        ;;
-    *)
-        echo "Invalid option"
-        ;;
-esac
-EOL
-
-    echo "power.sh has been updated."
-else
-    echo "power.sh does not exist in ~/github/suckless."
+  if grep -q "^$LINE_TO_UNCOMMENT" "$GRUB_FILE"; then
+    # Uncomment the line
+    sed -i "s/^$LINE_TO_UNCOMMENT/$UNCOMMENTED_LINE/" "$GRUB_FILE"
+    echo "Uncommented the line: $UNCOMMENTED_LINE"
+  elif ! grep -q "^$UNCOMMENTED_LINE" "$GRUB_FILE"; then
+    # Add the line if it doesn't exist
+    echo "$UNCOMMENTED_LINE" >> "$GRUB_FILE"
+    echo "Added the line: $UNCOMMENTED_LINE"
+  else
+    ;
+  fi
+  sudo pacman -Sy --noconfirm os-prober
+  sudo grub-mkconfig -o /boot/grub/grub.cfg
 fi
+
+# Store weather location
+cd ~/github/suckless
+echo "$location" > .wl
+cd -
 
 # virtual machines with "qemu" and "virtual machine manger"
 # Checks for conflicts
@@ -359,6 +403,26 @@ git clone https://github.com/Emil8630/wallpapers ~/github/wallpapers
 # Installing Picom
 git clone https://github.com/jonaburg/picom.git ~/picom && cd ~/picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && find picom -type f -exec shred -n 5 -fzu {} \; -exec rm -r {} +
 
+# Changing default shell
+sudo chsh -s /usr/bin/zsh root
+chsh -s /usr/bin/zsh $usr
+
+# Swap default browser
+DESKTOP_FILE_CONTENT="[Desktop Entry]
+Version=1.0
+Name=Mullvad Browser
+Comment=Browse the web securely with Mullvad
+Exec=/usr/bin/mullvad-browser %u
+Icon=mullvad-browser
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;application/x-xhtml+xml;application/xml;application/pdf;application/x-web-app-manifest+json;"
+DESKTOP_FILE_PATH="$HOME/.local/share/applications/mullvad-browser.desktop"
+echo "$DESKTOP_FILE_CONTENT" > "$DESKTOP_FILE_PATH"
+chmod +x "$DESKTOP_FILE_PATH"
+xdg-settings set default-web-browser mullvad-browser.desktop
+
 # Cleanup
 source ~/.bashrc
 source ~/.zshrc
@@ -372,7 +436,7 @@ wget -O - https://github.com/shvchk/fallout-grub-theme/raw/master/install.sh | b
 
 # flatpaks
 #flatpak install flathub md.obsidian.Obsidian
-flatpak install flathub com.github.iwalton3.jellyfin-media-player
+#flatpak install flathub com.github.iwalton3.jellyfin-media-player
 
 # Installing AUR packages
 

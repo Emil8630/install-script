@@ -63,6 +63,7 @@ sudo sh $(pwd)/artix-hardening.sh $usr
 
 packages_to_install=(
     "xclip"
+    "xdg-utils"
     "macchanger"
     "discord"
     "caja"
@@ -356,6 +357,22 @@ git clone https://github.com/Emil8630/wallpapers ~/wallpapers
 # Installing Picom
 git clone https://github.com/jonaburg/picom.git ~/picom && cd ~/picom && meson --buildtype=release . build && ninja -C build && ninja -C build install && cd .. && find picom -type f -exec shred -n 5 -fzu {} \; -exec rm -r {} +
 
+# Swap default browser
+DESKTOP_FILE_CONTENT="[Desktop Entry]
+Version=1.0
+Name=Mullvad Browser
+Comment=Browse the web securely with Mullvad
+Exec=/usr/bin/mullvad-browser %u
+Icon=mullvad-browser
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;application/x-xhtml+xml;application/xml;application/pdf;application/x-web-app-manifest+json;"
+DESKTOP_FILE_PATH="$HOME/.local/share/applications/mullvad-browser.desktop"
+echo "$DESKTOP_FILE_CONTENT" > "$DESKTOP_FILE_PATH"
+chmod +x "$DESKTOP_FILE_PATH"
+xdg-settings set default-web-browser mullvad-browser.desktop
+
 # Cleanup
 source ~/.bashrc
 source ~/.zshrc
@@ -378,6 +395,7 @@ flatpak install flathub com.github.iwalton3.jellyfin-media-player
 
 yay_packages_to_install=(
     "mullvad-vpn-bin"
+    "mullvad-browser-bin"
     "librewolf-bin"
     "vscodium-bin"
     "freetube-bin"
@@ -390,7 +408,6 @@ yay_packages_to_install=(
     "musikcube-bin"
 #    "icecat"
 #    "picom-jonaburg-git"
-#    "mullvad-browser-bin"
 )
 
 # Install AUR packages using yay
